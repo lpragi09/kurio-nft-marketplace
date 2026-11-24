@@ -76,6 +76,12 @@ function AuthPanel({ mode, redirect, reason }: { mode: Mode; redirect?: string; 
         </p>
       )}
       <div className="mt-6 w-full md:w-[340px]">{mode === 'login' ? <LoginForm redirect={redirect} /> : <RegisterForm redirect={redirect} />}</div>
+      {mode === 'login' && (
+        <p className="mt-3 w-full rounded border border-dashed border-kurio-line-2 px-3 py-2 text-center text-xs text-kurio-sand md:w-[340px]">
+          Demonstração (dados simulados): <strong className="text-foreground">ana@kurio.test</strong> ou{' '}
+          <strong className="text-foreground">bruno@kurio.test</strong>, senha <strong className="text-foreground">Kurio@123</strong>
+        </p>
+      )}
       <div className="mt-8 flex w-full items-center gap-3 md:w-full md:px-0">
         <span className="h-px flex-1 bg-kurio-line-2" />
         <span className="text-[13px]">Ou continue com</span>

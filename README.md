@@ -2,6 +2,8 @@
 
 Implementação do [desafio](https://github.com/junglegaming/frontend-challenge) seguindo o layout do Figma: descoberta, compra e conta do colecionador, em desktop e mobile, com API REST e Socket.IO **simulados com MSW**.
 
+**Aplicação publicada:** https://kurio-nft-marketplace-opal.vercel.app · **Repositório:** https://github.com/lpragi09/kurio-nft-marketplace
+
 > Arquitetura, contratos REST/eventos, política de sessão, cache e desvios do Figma: **[ARCHITECTURE.md](./ARCHITECTURE.md)**.
 
 ## Stack
