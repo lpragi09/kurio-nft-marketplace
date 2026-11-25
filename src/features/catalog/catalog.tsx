@@ -1,13 +1,11 @@
 import { getRouteApi, useNavigate } from '@tanstack/react-router'
-import { SlidersHorizontal, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { ChevronDown, SlidersHorizontal, X } from 'lucide-react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import type { CatalogSort, CatalogTab, CollectionCategory, Network, NftListResponse } from '@/contracts/api'
 import { NETWORKS } from '@/contracts/api'
 import { useMediaQuery } from '@/lib/use-media-query'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Slider } from '@/components/ui/slider'
 import { NftCard, NftCardSkeleton } from '@/components/kurio/nft-card'
 import { Pagination } from '@/components/kurio/pagination'
@@ -27,6 +25,7 @@ import {
 import { FeaturedNft } from './featured-nft'
 
 const route = getRouteApi('/')
+const FiltersSheet = lazy(() => import('./filters-sheet'))
 
 export function Catalog() {
   const search = route.useSearch()
@@ -158,18 +157,21 @@ function Toolbar({ search, update, facets }: { search: CatalogSearch; update: Up
         <label htmlFor="ordem" className="text-[15px] max-sm:sr-only">
           Ordenar por:
         </label>
-        <Select value={search.ordem ?? 'recentes'} onValueChange={(v) => update({ ordem: v === 'recentes' ? undefined : (v as CatalogSort) })}>
-          <SelectTrigger id="ordem" className="h-8 w-[220px] border-0 bg-transparent px-1 text-[15px] text-foreground">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
+        <div className="relative">
+          <select
+            id="ordem"
+            value={search.ordem ?? 'recentes'}
+            onChange={(e) => update({ ordem: e.target.value === 'recentes' ? undefined : (e.target.value as CatalogSort) })}
+            className="h-8 w-[220px] cursor-pointer appearance-none rounded bg-transparent pl-1 pr-7 text-[15px] text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+          >
             {(Object.keys(SORT_LABELS) as CatalogSort[]).map((s) => (
-              <SelectItem key={s} value={s}>
+              <option key={s} value={s} className="bg-kurio-surface">
                 {SORT_LABELS[s]}
-              </SelectItem>
+              </option>
             ))}
-          </SelectContent>
-        </Select>
+          </select>
+          <ChevronDown aria-hidden className="pointer-events-none absolute right-1 top-1.5 size-5 text-kurio-sand" />
+        </div>
       </div>
     </div>
   )
@@ -293,22 +295,22 @@ function PriceFilter({ search, facets, update }: { search: CatalogSearch; facets
 }
 
 function MobileFilters({ search, update, facets }: { search: CatalogSearch; update: Update; facets?: NftListResponse['facets'] }) {
+  const [open, setOpen] = useState(false)
   const count = (search.cat?.split(',').length ?? 0) + (search.rede?.split(',').length ?? 0) + (search.min || search.max ? 1 : 0)
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="sm" className="lg:hidden" aria-label={`Filtros${count ? `, ${count} ativos` : ''}`}>
-          <SlidersHorizontal aria-hidden /> Filtros{count ? ` (${count})` : ''}
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="w-[320px] overflow-y-auto border-kurio-line bg-kurio-bg p-0">
-        <SheetHeader className="px-5 pt-5">
-          <SheetTitle>Filtros</SheetTitle>
-          <SheetDescription>Combine coleções, faixa de preço e rede.</SheetDescription>
-        </SheetHeader>
-        <Filters search={search} update={update} facets={facets} />
-      </SheetContent>
-    </Sheet>
+    <>
+      <Button variant="outline" size="sm" className="lg:hidden" aria-haspopup="dialog" aria-label={`Filtros${count ? `, ${count} ativos` : ''}`} onClick={() => setOpen(true)}>
+        <SlidersHorizontal aria-hidden /> Filtros{count ? ` (${count})` : ''}
+      </Button>
+      {/* the drawer (Radix Dialog) is only downloaded when first opened */}
+      {open && (
+        <Suspense fallback={null}>
+          <FiltersSheet open={open} onOpenChange={setOpen}>
+            <Filters search={search} update={update} facets={facets} />
+          </FiltersSheet>
+        </Suspense>
+      )}
+    </>
   )
 }
 

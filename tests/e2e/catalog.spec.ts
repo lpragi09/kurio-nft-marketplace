@@ -23,8 +23,7 @@ test.describe('Catálogo', () => {
     await expect(grid(page).first()).toBeVisible()
 
     // sorting
-    await page.getByRole('combobox', { name: 'Ordenar por:' }).click()
-    await page.getByRole('option', { name: 'Menor preço' }).click()
+    await page.getByRole('combobox', { name: 'Ordenar por:' }).selectOption({ label: 'Menor preço' })
     await expect(page).toHaveURL(/ordem=preco-asc/)
     await expect
       .poll(async () => {

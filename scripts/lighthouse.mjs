@@ -11,7 +11,7 @@ import desktopConfig from 'lighthouse/core/config/desktop-config.js'
 const PORT = 4174
 const BASE = process.env.LH_BASE_URL ?? `http://localhost:${PORT}`
 const RUNS = Number(process.env.LH_RUNS ?? 3)
-const OUT = path.resolve('lighthouse/reports')
+const OUT = path.resolve(process.env.LH_OUT ?? 'lighthouse/reports')
 const PAGES = [
   { name: 'inicio', path: '/' },
   { name: 'detalhe', path: '/nft/emerald-ape-042' },
