@@ -114,12 +114,14 @@ Todas as ações passam pelo MSW: alteram o banco simulado, que responde via RES
 
 | Página | Perfil | Performance | Accessibility | Best Practices | SEO | LCP | CLS | TBT |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| início | mobile | **95** | 100 | 100 | 100 | 2561 ms | 0.001 | 145 ms |
-| início | desktop | **100** | 100 | 100 | 100 | 591 ms | 0.002 | 0 ms |
-| detalhe | mobile | **97** | 100 | 100 | 100 | 2514 ms | 0.029 | 109 ms |
-| detalhe | desktop | **100** | 100 | 100 | 100 | 545 ms | 0.006 | 0 ms |
+| início | mobile | **94** | 100 | 100 | 100 | 2718 ms | 0.001 | 185 ms |
+| início | desktop | **100** | 100 | 100 | 100 | 561 ms | 0.001 | 2 ms |
+| detalhe | mobile | **95** | 100 | 100 | 100 | 2445 ms | 0.029 | 181 ms |
+| detalhe | desktop | **100** | 100 | 100 | 100 | 565 ms | 0.006 | 0 ms |
 
 **Build local (`vite preview`)**, em `lighthouse/reports/` (`npm run build && npm run lighthouse`): desktop 100/100/100/100 nas duas páginas; mobile 88/100/100/100 nas duas (LCP ~3,7 s, CLS ≤ 0,029, TBT ~150 ms). A diferença de performance no mobile vem do servidor local: o `vite preview` serve via HTTP/1.1 sem brotli, enquanto a Vercel serve com HTTP/2, brotli e CDN. A análise completa está em [ARCHITECTURE.md § Performance](./ARCHITECTURE.md#performance-e-lighthouse).
+
+Entre rodadas a performance mobile varia de 1 a 3 pontos (simulação de rede/CPU); nas medições finais ela ficou entre 94 e 97.
 
 Ambiente: Lighthouse 13.6.0, Chrome headless 158, Node 24, Windows 11, Ryzen 5 5600X, throttling padrão do Lighthouse (mobile: 4G lento simulado + CPU 4×).
 

@@ -146,7 +146,7 @@ Link "pular para o conteúdo"; sem overflow horizontal em 320 px (equivalente a 
 
 ## Performance e Lighthouse
 
-Medianas de 3 execuções no build publicado: **início 95 (mobile) / 100 (desktop), detalhe 97 / 100**, e 100 em Accessibility, Best Practices e SEO. Tabelas e ambiente no README.
+Medianas de 3 execuções no build publicado: **início 94–95 (mobile) / 100 (desktop), detalhe 95–97 / 100**, e 100 em Accessibility, Best Practices e SEO. Tabelas e ambiente no README.
 
 O ponto de partida foi 69/78 no mobile. A cadeia crítica era: JS do app → JS do mock → registro do service worker → resposta → imagem. As mudanças, todas válidas para usuários reais e sem atalhos para a auditoria:
 
