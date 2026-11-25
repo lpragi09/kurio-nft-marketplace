@@ -74,6 +74,7 @@ Todas as ações passam pelo MSW: alteram o banco simulado, que responde via RES
 | `offline` | Toda requisição falha na rede; o socket é recusado |
 | `erro-servidor` | Catálogo e detalhe respondem 500 |
 | `falha-transitoria` | As 2 primeiras chamadas do catálogo respondem 503; a nova tentativa funciona |
+| `timeout-catalogo` | As 2 primeiras listagens nunca respondem (timeout do cliente em 10 s); a nova tentativa funciona |
 | `catalogo-vazio` | Busca sem resultados |
 | `favoritos-falha` | Favoritar/desfavoritar responde 500 (rollback otimista) |
 | `sessao-curta` | Tokens expiram 45 s após o login |
@@ -98,24 +99,29 @@ Todas as ações passam pelo MSW: alteram o banco simulado, que responde via RES
 
 `tests/e2e/` cobre os 12 fluxos pedidos (busca/filtros/paginação/histórico, detalhe/404, cadastro/login/expiração/logout/troca de usuário, favoritos com rollback, carrinho/cupom/persistência/merge, compra completa, recusa/clique repetido/timeout idempotente, perfil/avatar/senha/carteiras, preço via Socket.IO no checkout, eventos duplicados/antigos e retomada de pedido pendente, teclado/foco/validação, skeletons/falha/nova tentativa), além da regressão visual de início, detalhe, carrinho e pagamento.
 
-- Última execução local: **69 passaram, 3 pulados de propósito** (navegação por teclado e filtros laterais rodam só no desktop), em Chromium desktop e mobile.
+- Última execução local: **69 aprovados, 0 falhas** (alguns testes rodam só no desktop por definição, como teclado, filtros laterais e larguras explícitas), em Chromium desktop (1440×900) e mobile (390×844). Também há verificação de overflow em 320, 390, 768 e 1440 px.
 - Cada teste roda num contexto novo (localStorage vazio → banco simulado re-semeado), o que garante isolamento.
 - Latência e falhas são controladas por cenário; eventos são disparados pelas rotas `/__mock/*`, passando pelo `socket.io-client` real. Os testes visuais fixam o relógio (`page.clock.setFixedTime`).
 - Baselines versionadas em `tests/e2e/__screenshots__/{desktop,mobile}/` (geradas no Windows; em outro SO, rode `npm run test:e2e:update` uma vez, porque a renderização de fonte varia).
-- Relatório HTML em `playwright-report/`, com traces das falhas (`trace: retain-on-failure`).
+- Relatório HTML da última execução versionado em [`reports/playwright/`](./reports/playwright/index.html); localmente ele é gerado em `playwright-report/`, com traces das falhas (`trace: retain-on-failure`).
+- CI (`.github/workflows/ci.yml`): typecheck, lint e E2E em cada push, publicando relatório e traces como artefatos. No Linux, o CI ignora só a comparação de pixels, porque as baselines foram geradas no Windows.
 
 ## Lighthouse
 
-`scripts/lighthouse.mjs` (configuração versionada) sobe o `vite preview` e audita `/` e `/nft/emerald-ape-042` nos perfis mobile e desktop, 3 vezes cada, no cenário padrão dos mocks. Os relatórios HTML/JSON por execução e o `summary.md`/`summary.json` (medianas, LCP/CLS/TBT, versões e ambiente) ficam em `lighthouse/reports/`.
+`scripts/lighthouse.mjs` (configuração versionada) audita `/` e `/nft/emerald-ape-042` nos perfis mobile e desktop, 3 vezes cada, no cenário padrão dos mocks, e reporta a **mediana**. Os relatórios HTML/JSON por execução e o `summary.md`/`summary.json` (medianas, LCP/CLS/TBT, versões e ambiente) ficam versionados.
+
+**Build publicado (Vercel)**, em `lighthouse/reports-producao/` (`LH_BASE_URL=https://kurio-nft-marketplace-opal.vercel.app npm run lighthouse`):
 
 | Página | Perfil | Performance | Accessibility | Best Practices | SEO | LCP | CLS | TBT |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| início | mobile | 69 | 100 | 100 | 100 | 5394 ms | 0.001 | 307 ms |
-| início | desktop | 99 | 100 | 100 | 100 | 980 ms | 0.002 | 15 ms |
-| detalhe | mobile | 78 | 100 | 100 | 100 | 4785 ms | 0.029 | 257 ms |
-| detalhe | desktop | 98 | 100 | 100 | 100 | 1109 ms | 0.006 | 0 ms |
+| início | mobile | **95** | 100 | 100 | 100 | 2561 ms | 0.001 | 145 ms |
+| início | desktop | **100** | 100 | 100 | 100 | 591 ms | 0.002 | 0 ms |
+| detalhe | mobile | **97** | 100 | 100 | 100 | 2514 ms | 0.029 | 109 ms |
+| detalhe | desktop | **100** | 100 | 100 | 100 | 545 ms | 0.006 | 0 ms |
 
-Mediana de 3 execuções (Lighthouse 13.6.0, Chrome headless 158, Node 24, Windows 11, Ryzen 5 5600X; throttling padrão do Lighthouse). A justificativa da performance mobile abaixo da meta está em [ARCHITECTURE.md § Performance](./ARCHITECTURE.md#performance-e-lighthouse).
+**Build local (`vite preview`)**, em `lighthouse/reports/` (`npm run build && npm run lighthouse`): desktop 100/100/100/100 nas duas páginas; mobile 88/100/100/100 nas duas (LCP ~3,7 s, CLS ≤ 0,029, TBT ~150 ms). A diferença de performance no mobile vem do servidor local: o `vite preview` serve via HTTP/1.1 sem brotli, enquanto a Vercel serve com HTTP/2, brotli e CDN. A análise completa está em [ARCHITECTURE.md § Performance](./ARCHITECTURE.md#performance-e-lighthouse).
+
+Ambiente: Lighthouse 13.6.0, Chrome headless 158, Node 24, Windows 11, Ryzen 5 5600X, throttling padrão do Lighthouse (mobile: 4G lento simulado + CPU 4×).
 
 ## Deploy
 

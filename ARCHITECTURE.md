@@ -104,7 +104,7 @@ Envelope comum (`src/contracts/events.ts`):
 - `fixtures.ts`: 72 NFTs determinísticos (PRNG com seed). Os 9 primeiros reproduzem o grid do Figma, com 9 coleções, 3 redes, 4 edições por NFT, preços de 0,05 a 12,3 ETH e casos de edição esgotada e NFT inteiro esgotado. Também traz 2 usuários (senha em hash), carteiras, cupons e taxas por rede.
 - `db.ts`: estado único (catálogo, sessões, favoritos, carrinhos, cotações, pedidos, idempotência, carteiras, conexões) persistido no localStorage. `resetDb()` restaura o snapshot.
 - `service.ts`: regras de negócio (sessão, limites do carrinho, cotação, revalidação, liquidação de pedidos e retomada de timers após refresh).
-- `handlers.ts`: REST + rotas de controle `/__mock/*`. O wrapper `route()` aplica o cenário (offline, latência fixa, variável ou fora de ordem, falhas por rota com contador `times`) e mapeia `ServiceError` para o formato de erro.
+- `handlers.ts`: REST + rotas de controle `/__mock/*`. O wrapper `route()` aplica o cenário (offline, latência fixa, variável ou fora de ordem, falhas HTTP ou **timeout** (sem resposta) por rota, com contador `times`) e mapeia `ServiceError` para o formato de erro.
 - `realtime.ts`: servidor Socket.IO simulado. Toda mutação de NFT ou pedido passa por `updateNft()`/`settleOrder()`, que persistem **e** emitem o evento, mantendo REST e eventos coerentes.
 - Ativação: `VITE_ENABLE_MOCKS` (padrão ligado, inclusive no build publicado).
 
@@ -141,13 +141,29 @@ Envelope comum (`src/contracts/events.ts`):
 
 ## Acessibilidade
 
-Link "pular para o conteúdo"; foco movido para `<main>` a cada navegação; diálogos e sheets do Radix com foco preso e devolvido; labels em todos os campos (labels visualmente ocultos onde o Figma usa só placeholder); erros associados por `aria-describedby` + `aria-invalid` + `role="alert"`; marcador de obrigatório fora do nome acessível (`aria-required`); estados não dependentes só de cor (riscado + texto "esgotada", `aria-pressed`, `aria-current`); avisos de tempo real e de mutations em `aria-live`; alvos de toque com no mínimo 24 px; sem overflow horizontal em 390, 768 e 1440 px.
+Link "pular para o conteúdo"; sem overflow horizontal em 320 px (equivalente a zoom de 400%), 390, 768 e 1440 px, verificado no E2E; foco movido para `<main>` a cada navegação; diálogos e sheets do Radix com foco preso e devolvido; labels em todos os campos (labels visualmente ocultos onde o Figma usa só placeholder); erros associados por `aria-describedby` + `aria-invalid` + `role="alert"`; marcador de obrigatório fora do nome acessível (`aria-required`); estados não dependentes só de cor (riscado + texto "esgotada", `aria-pressed`, `aria-current`); avisos de tempo real e de mutations em `aria-live`; alvos de toque com no mínimo 24 px.
 
 ## Performance e Lighthouse
 
-Otimizações aplicadas: imagens WebP em 160/400/800 com `srcset`/`sizes` e `width`/`height` fixos; `fetchpriority=high` e preload da arte LCP; code splitting por rota; fonte Roboto Mono self-hosted (somente subset latin); a app renderiza **antes** do worker do MSW ficar pronto (só HTTP e socket aguardam); `min-height` no `<main>` (o CLS do detalhe caiu de 0,70 para 0,006); `robots.txt`; cache imutável de assets.
+Medianas de 3 execuções no build publicado: **início 95 (mobile) / 100 (desktop), detalhe 97 / 100**, e 100 em Accessibility, Best Practices e SEO. Tabelas e ambiente no README.
 
-**Mobile abaixo de 90 em Performance — causa:** no perfil mobile (4G lento + CPU 4× simulados), o LCP é a primeira imagem do catálogo ou a arte do NFT, que dependem dos dados da API. No ambiente de demonstração, a API exige carregar e executar o MSW + interceptors + binding Socket.IO (~176 KB gzip) e registrar o service worker antes da primeira resposta. Essa cadeia (JS do app → JS do mock → SW → resposta → imagem) domina o LCP simulado (~4,8–5,4 s) e o TBT (~250–300 ms). Com um backend real, esse custo some. No desktop, as mesmas páginas ficam em 98–99. A auditoria roda com os mocks, imagens, fontes e funcionalidades reais da entrega, sem atalhos específicos para a pontuação.
+O ponto de partida foi 69/78 no mobile. A cadeia crítica era: JS do app → JS do mock → registro do service worker → resposta → imagem. As mudanças, todas válidas para usuários reais e sem atalhos para a auditoria:
+
+| Mudança | Efeito |
+| --- | --- |
+| App renderiza **antes** do worker do MSW ficar pronto; só HTTP (interceptor do Axios) e o socket aguardam | FCP sem esperar o mock |
+| `tough-cookie`/`tldts` (cookie jar do MSW) trocados por um stub (`src/mocks/tough-cookie-stub.ts`): a API usa Bearer token e nunca define cookies | chunk do mock 176 → 54 KB gzip |
+| `modulepreload` do chunk do mock (plugin em `vite.config.ts`) | download em paralelo com o app |
+| `socket.io-client` importado dinamicamente e conectado no primeiro *idle* (`requestIdleCallback`) | tira a conexão do primeiro render (o reconnect já reconcilia via REST) |
+| Menu da conta (Radix + floating-ui), drawer de filtros e tela de login fora do bundle inicial; `<select>` nativo na ordenação | menos JS na home |
+| Hero e sidebar do desktop **não renderizados** no mobile (antes só ficavam ocultos por CSS) | não baixa a arte 800 px nem faz a request do destaque |
+| Banners, Diário da Cunhagem e rodapé montados ao se aproximarem do viewport (`LazySection`, placeholder com altura reservada) | TBT 376 → ~145 ms |
+| Imagens WebP 160/400/800 com `srcset`/`sizes`, `width`/`height`, `fetchpriority` e preload da arte LCP; `min-height` no `<main>` | CLS 0,70 → 0,006 no detalhe |
+| Fonte self-hosted (só latin), `robots.txt`, cache imutável de `/assets` | SEO e Best Practices 100 |
+
+Limitação do stub: os handlers mockados não podem depender de persistência de cookies (nenhum depende).
+
+Testado e descartado: `content-visibility: auto` nas seções abaixo da dobra reduzia o layout, mas fazia a auditoria de alvo de toque medir elementos com tamanho zero (Accessibility 97). Foi trocado pelo `LazySection`.
 
 ## Decisões de UX e desvios do Figma
 
