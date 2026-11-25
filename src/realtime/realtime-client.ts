@@ -53,6 +53,11 @@ export class RealtimeClient {
   async start() {
     realtimeStatus.set('connecting')
     await mocksReady()
+    // connect once the main thread is idle: keeps socket setup out of the first render
+    await new Promise<void>((resolve) =>
+      'requestIdleCallback' in window ? window.requestIdleCallback(() => resolve(), { timeout: 1500 }) : setTimeout(resolve, 200),
+    )
+    if (this.stopped) return
     // loaded lazily: engine.io captures the WebSocket constructor when it is evaluated,
     // which must happen after MSW patched it
     const { io } = await import('socket.io-client')

@@ -2,14 +2,14 @@
 
 | Página | Perfil | Performance | Accessibility | Best Practices | SEO | LCP | CLS | TBT |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| inicio | mobile | 93 | 100 | 100 | 100 | 2722 ms | 0.001 | 213 ms |
-| inicio | desktop | 100 | 100 | 100 | 100 | 608 ms | 0.002 | 13 ms |
-| detalhe | mobile | 95 | 100 | 100 | 100 | 2546 ms | 0.029 | 164 ms |
-| detalhe | desktop | 100 | 100 | 100 | 100 | 563 ms | 0.006 | 0 ms |
+| inicio | mobile | 89 | 100 | 100 | 100 | 2737 ms | 0.001 | 308 ms |
+| inicio | desktop | 100 | 100 | 100 | 100 | 602 ms | 0.002 | 9 ms |
+| detalhe | mobile | 90 | 100 | 100 | 100 | 2588 ms | 0.015 | 313 ms |
+| detalhe | desktop | 100 | 100 | 100 | 100 | 573 ms | 0.006 | 0 ms |
 
 ## Ambiente
 
-- **date**: 2026-11-25T02:32:58.978Z
+- **date**: 2026-11-25T02:57:16.835Z
 - **lighthouse**: 13.6.0
 - **chrome**: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36
 - **node**: v24.14.0

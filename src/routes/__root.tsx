@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { MobileTabBar } from '@/components/layout/mobile-nav'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
+import { LazySection } from '@/components/kurio/lazy-section'
 import { RealtimeBridge } from '@/app/realtime-bridge'
 import { ScenarioPanel } from '@/app/scenario-panel'
 import { SessionWatcher } from '@/app/session-watcher'
@@ -31,7 +32,9 @@ function RootLayout() {
       <main id="conteudo" tabIndex={-1} className="min-h-[100dvh] outline-none">
         <Outlet />
       </main>
-      <SiteFooter />
+      <LazySection minHeight={900}>
+        <SiteFooter />
+      </LazySection>
       <MobileTabBar />
       <SessionWatcher />
       <RealtimeBridge />
