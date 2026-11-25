@@ -30,7 +30,7 @@ test.describe('Favoritos', () => {
 })
 
 test.describe('Carrinho', () => {
-  test('5. quantidades, remoção, cupom e persistência após refresh e login', async ({ page, isMobile }) => {
+  test('5. quantidades, remoção, cupom e persistência após refresh e login', async ({ page }) => {
     await addToCart(page, 'emerald-ape-042', { quantity: 2 })
     await addToCart(page, 'ivory-baron-088')
     const total = page.getByTestId('quote-total')

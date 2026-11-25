@@ -41,11 +41,14 @@ export class MockControl {
 }
 
 export const test = base.extend<{ mock: MockControl; isMobile: boolean }>({
-  mock: async ({ page }, use) => {
-    await use(new MockControl(page))
+  // Playwright passes the fixture setter positionally; it is named `provide` (not `use`)
+  // so React-hooks lint rules do not mistake it for a hook.
+  mock: async ({ page }, provide) => {
+    await provide(new MockControl(page))
   },
-  isMobile: async ({}, use, info) => {
-    await use(info.project.name === 'mobile')
+  // oxlint-disable-next-line no-empty-pattern -- Playwright requires a destructuring pattern here
+  isMobile: async ({}, provide, info) => {
+    await provide(info.project.name === 'mobile')
   },
 })
 
