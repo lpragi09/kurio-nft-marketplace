@@ -82,4 +82,21 @@ test.describe('Conta e sessão', () => {
     const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('kurio.session.v1') ?? '{}').user?.email)
     expect(stored).toBe(USERS.bruno.email)
   })
+
+  test('3e. duas abas abertas: login em uma não derruba a sessão (backend simulado compartilhado)', async ({ page, context }) => {
+    // tab B opened first, with the mock DB loaded before the login happens
+    const other = await context.newPage()
+    await open(other, '/')
+    await addToCart(page, 'emerald-ape-042')
+    await login(page, USERS.ana, '/pagamento')
+    await expect(page.getByRole('heading', { name: 'Perfil do colecionador' })).toBeVisible()
+    // tab B learns about the session (storage event) and validates it against its own mock
+    await other.reload()
+    await expect(other.getByRole('button', { name: /Conta de Ana Souza/ }).or(other.getByRole('link', { name: 'Meu perfil' })).first()).toBeAttached()
+    await page.waitForTimeout(1500)
+    // tab A is still signed in and its checkout still renders
+    await expect(page.getByRole('heading', { name: 'Perfil do colecionador' })).toBeVisible()
+    const session = await page.evaluate(() => JSON.parse(localStorage.getItem('kurio.session.v1') ?? 'null')?.user?.email)
+    expect(session).toBe(USERS.ana.email)
+  })
 })

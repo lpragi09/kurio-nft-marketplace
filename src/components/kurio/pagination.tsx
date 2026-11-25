@@ -3,6 +3,9 @@ import { cn } from '@/lib/utils'
 
 function pages(current: number, total: number): (number | '…')[] {
   if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1)
+  // near the start: 1 2 3 4 … N (as in the Figma)
+  if (current <= 3) return [1, 2, 3, 4, '…', total]
+  if (current >= total - 2) return [1, '…', total - 3, total - 2, total - 1, total]
   const set = new Set([1, total, current - 1, current, current + 1].filter((p) => p >= 1 && p <= total))
   const sorted = [...set].sort((a, b) => a - b)
   const out: (number | '…')[] = []

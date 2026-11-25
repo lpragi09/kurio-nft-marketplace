@@ -2,7 +2,7 @@ import { toSocketIo } from '@mswjs/socket.io-binding'
 import { ws } from 'msw'
 import type { Nft, Order } from '@/contracts/api'
 import type { NftUpdatedEvent, OrderUpdatedEvent } from '@/contracts/events'
-import { db, scenario } from './db'
+import { db, scenario, syncFromStorage } from './db'
 
 /**
  * Socket.IO server simulated with MSW's WebSocket interception and the
@@ -27,6 +27,7 @@ const realtime = ws.link('wss://realtime.kurio.test/*')
 
 export const realtimeHandlers = [
   realtime.addEventListener('connection', (connection) => {
+    syncFromStorage()
     // Offline scenario → refuse the socket; socket.io-client will keep retrying.
     if (scenario.offline) {
       connection.client.close(1011, 'offline')
@@ -60,7 +61,21 @@ export const realtimeHandlers = [
   }),
 ]
 
-function deliver(targets: LiveConnection[], type: 'nft.updated' | 'order.updated', event: NftUpdatedEvent | OrderUpdatedEvent) {
+/**
+ * Events produced by the mock running in one tab are relayed to the mocks of the other
+ * open tabs, which deliver them to their own sockets (one logical backend, many tabs).
+ */
+type Relay = { type: 'nft.updated' | 'order.updated'; event: NftUpdatedEvent | OrderUpdatedEvent }
+const relay = typeof BroadcastChannel === 'undefined' ? null : new BroadcastChannel('kurio-mock-realtime')
+relay?.addEventListener('message', (e: MessageEvent<Relay>) => {
+  syncFromStorage()
+  const { type, event } = e.data
+  const targets = [...connections.values()].filter((c) => !event.userId || c.userId === event.userId)
+  deliver(targets, type, event, false)
+})
+
+function deliver(targets: LiveConnection[], type: 'nft.updated' | 'order.updated', event: NftUpdatedEvent | OrderUpdatedEvent, broadcast = true) {
+  if (broadcast) relay?.postMessage({ type, event } satisfies Relay)
   for (const c of targets) {
     c.io.client.emit(type, event)
     if (scenario.realtime.duplicateEvents) {

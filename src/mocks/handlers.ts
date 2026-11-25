@@ -32,6 +32,7 @@ import {
   resetDb,
   scenario,
   setScenario,
+  syncFromStorage,
   type OrderRecord,
 } from './db'
 import { CATEGORY_NAMES, mulberry32 } from './fixtures'
@@ -90,8 +91,10 @@ function route<P extends PathParams, B extends DefaultBodyType>(
   resolver: HttpResponseResolver<P, B>,
 ): HttpResponseResolver<P, B> {
   return async (info) => {
+    syncFromStorage()
     if (scenario.offline) return HttpResponse.error()
     await applyLatency()
+    syncFromStorage() // another tab may have written during the simulated latency
     if (key) {
       const rule = scenario.failures[key]
       if (rule) {
@@ -574,14 +577,15 @@ export const restHandlers = [
 /* ─────────────────────────── mock control (dev panel / Playwright) ─────────────────────────── */
 
 export const controlHandlers = [
-  http.get('/__mock/state', () =>
-    HttpResponse.json({
+  http.get('/__mock/state', () => {
+    syncFromStorage()
+    return HttpResponse.json({
       scenario,
       scenarios: Object.entries(SCENARIOS).map(([name, s]) => ({ name, label: s.label, description: s.description })),
       sockets: liveSocketCount(),
       orders: Object.values(db.orders).map((o) => ({ id: o.id, status: o.status, userId: o.userId, total: o.total })),
-    }),
-  ),
+    })
+  }),
   http.post('/__mock/reset', () => {
     clearSettlementTimers()
     resetDb()
@@ -596,6 +600,7 @@ export const controlHandlers = [
     return HttpResponse.json({ scenario })
   }),
   http.post('/__mock/nfts/:id', async ({ params, request }) => {
+    syncFromStorage()
     const patch = (await request.json()) as { price?: string; edition?: EditionId; available?: number; editionPrice?: string }
     try {
       return HttpResponse.json(updateNft(String(params.id), patch))
@@ -609,11 +614,13 @@ export const controlHandlers = [
     return HttpResponse.json({ ok: true })
   }),
   http.post('/__mock/sessions/expire', () => {
+    syncFromStorage()
     for (const s of Object.values(db.sessions)) s.expiresAt = Date.now() - 1
     persist()
     return HttpResponse.json({ ok: true })
   }),
   http.post('/__mock/orders/:id/settle', ({ params }) => {
+    syncFromStorage()
     const order = db.orders[String(params.id)]
     if (order) order.settlesAt = Date.now()
     return HttpResponse.json(order ? publicOrder(settleOrder(String(params.id))!) : null)

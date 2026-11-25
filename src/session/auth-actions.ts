@@ -24,8 +24,11 @@ export async function completeLogin(qc: QueryClient, session: Session) {
   sessionStore.set({ token: session.token, user: session.user, expiresAt: session.expiresAt })
   // Preserve the visitor's cart: merge it server-side into the user's cart.
   try {
+    const userCartKey = qk.cart(`user:${session.user.id}`)
     const cart = await cartApi.merge(guestId)
-    qc.setQueryData(qk.cart(`user:${session.user.id}`), cart)
+    // a GET /cart fired before the merge finished must not overwrite the merged cart
+    await qc.cancelQueries({ queryKey: userCartKey, exact: true })
+    qc.setQueryData(userCartKey, cart)
     qc.removeQueries({ queryKey: qk.cart(`guest:${guestId}`) })
     rotateGuestCartId()
   } catch {

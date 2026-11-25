@@ -115,8 +115,8 @@ function NftDetail({ nft }: { nft: Nft }) {
                 <span className="text-kurio-sand">({nft.reviewCount})</span>
               </span>
             </div>
-            <div className="mt-2 hidden items-center justify-between gap-4 border-b border-kurio-line-2 pb-3 md:flex">
-              <p className="text-[22px] font-bold text-primary" aria-live="polite">
+            <div className="mt-2 hidden flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-kurio-line-2 pb-3 md:flex">
+              <p className="whitespace-nowrap text-[22px] font-bold text-primary" aria-live="polite">
                 <span className="sr-only">Preço da edição {EDITION_LABEL[edition.id]}: </span>
                 {formatEth(edition.price)}
               </p>
@@ -270,7 +270,7 @@ function Gallery({ nft }: { nft: Nft }) {
           </li>
         ))}
       </ul>
-      <div className="relative rounded-[6px] md:bg-kurio-surface md:p-5">
+      <div className="relative self-start rounded-[6px] md:bg-kurio-surface md:p-5">
         <div className="overflow-hidden rounded-[16px]">
           <NftImage base={nft.gallery[active] ?? nft.image} alt={nft.imageAlt} priority sizes="(min-width: 1024px) 404px, 100vw" className={cn('transition-transform', crops[active])} />
         </div>

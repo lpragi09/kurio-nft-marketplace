@@ -10,7 +10,7 @@ import type {
   User,
 } from '@/contracts/api'
 import { compareEth, eth, mulEth, percentOf, subEth, sumEth } from '@/lib/eth'
-import { db, nextId, persist, scenario, type CartRecord, type OrderRecord, type QuoteRecord } from './db'
+import { db, nextId, persist, scenario, syncFromStorage, type CartRecord, type OrderRecord, type QuoteRecord } from './db'
 import { COUPONS, NETWORK_FEES, type UserRecord } from './fixtures'
 import { publishNftUpdated, publishOrderUpdated } from './realtime'
 
@@ -313,6 +313,7 @@ export function scheduleSettlement(order: OrderRecord) {
 
 export function settleOrder(orderId: string) {
   settleTimers.delete(orderId)
+  syncFromStorage() // another tab may have settled it already
   const order = db.orders[orderId]
   if (!order || order.status !== 'pending') return order
   order.status = order.outcome

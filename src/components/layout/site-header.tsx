@@ -18,10 +18,10 @@ export function SiteHeader() {
   return (
     <header className="hidden md:block">
       <div className="mx-auto flex h-[68px] max-w-[1200px] items-center justify-between border-b border-kurio-line-2 px-6 xl:px-0">
-        <Link to="/" className="w-40 text-sm font-bold tracking-[0.1em]" aria-label="Kurio, página inicial">
+        <Link to="/" className="text-sm font-bold tracking-[0.1em] lg:w-40" aria-label="Kurio, página inicial">
           KURIO
         </Link>
-        <nav aria-label="Principal" className="flex items-end gap-10 self-end">
+        <nav aria-label="Principal" className="flex items-end gap-5 self-end lg:gap-10">
           <Link to="/" className={cn(navLink, !marketActive && pathname === '/' && activeNav)} activeOptions={{ exact: true }}>
             Início
           </Link>
@@ -31,7 +31,7 @@ export function SiteHeader() {
           <ComingSoon className={navLink}>Criadores</ComingSoon>
           <ComingSoon className={navLink}>Aprenda</ComingSoon>
         </nav>
-        <div className="flex w-52 items-center justify-end gap-6">
+        <div className="flex items-center justify-end gap-4 lg:w-52 lg:gap-6">
           <HeaderSearch />
           <CartButton />
           <AccountButton />

@@ -89,9 +89,42 @@ function load(): DbState {
 }
 
 export let db: DbState = load()
+let lastDbRaw: string | null = storage?.getItem(DB_KEY) ?? null
 
 export function persist() {
-  storage?.setItem(DB_KEY, JSON.stringify(db))
+  const raw = JSON.stringify(db)
+  storage?.setItem(DB_KEY, raw)
+  lastDbRaw = raw
+}
+
+/**
+ * Every open tab runs its own MSW worker client with an in-memory copy of the DB.
+ * Before handling anything, adopt the latest state another tab may have persisted, so
+ * all tabs behave like clients of ONE backend (sessions, carts, orders, catalog).
+ */
+export function syncFromStorage() {
+  if (!storage) return
+  const raw = storage.getItem(DB_KEY)
+  if (raw && raw !== lastDbRaw) {
+    try {
+      const parsed = JSON.parse(raw) as DbState
+      if (parsed.schema === 1) {
+        db = parsed
+        lastDbRaw = raw
+      }
+    } catch {
+      /* keep the current state */
+    }
+  }
+  const scenarioRaw = storage.getItem(SCENARIO_KEY)
+  if (scenarioRaw && scenarioRaw !== lastScenarioRaw) {
+    try {
+      scenario = { ...DEFAULT_SCENARIO, ...(JSON.parse(scenarioRaw) as ScenarioConfig) }
+      lastScenarioRaw = scenarioRaw
+    } catch {
+      /* ignore */
+    }
+  }
 }
 
 export function nextId(prefix: string) {
@@ -112,6 +145,7 @@ function loadScenario(): ScenarioConfig {
 }
 
 export let scenario: ScenarioConfig = loadScenario()
+let lastScenarioRaw: string | null = storage?.getItem(SCENARIO_KEY) ?? null
 const failureCounters: Partial<Record<RouteKey, number>> = {}
 let requestCounter = 0
 
@@ -121,7 +155,8 @@ export function setScenario(next: ScenarioConfig) {
   requestCounter = 0
   db.consumed = {}
   persist()
-  storage?.setItem(SCENARIO_KEY, JSON.stringify(next))
+  lastScenarioRaw = JSON.stringify(next)
+  storage?.setItem(SCENARIO_KEY, lastScenarioRaw)
 }
 
 export function bumpFailureCounter(key: RouteKey) {

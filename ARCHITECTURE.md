@@ -96,7 +96,8 @@ Envelope comum (`src/contracts/events.ts`):
 - O binding responde o handshake com `pingInterval` de 25 s. O mock envia pings Engine.IO a cada 20 s para manter a conexão.
 - O `engine.io-client` captura o construtor `WebSocket` quando o módulo é avaliado. Por isso o `socket.io-client` é importado dinamicamente **depois** que o worker do MSW sobe.
 - O MSW remove o prefixo `/socket.io/` antes de casar a URL, então o `ws.link` usa o host inteiro (`wss://realtime.kurio.test/*`).
-- Limitações: não há namespaces, rooms nem polling HTTP. A autenticação vai em query string (`?token=`) em vez do pacote de auth do Socket.IO. Tudo roda numa única aba: cada aba tem seu próprio servidor simulado (o estado é compartilhado pelo localStorage, mas eventos não cruzam abas).
+- Limitações: não há namespaces, rooms nem polling HTTP. A autenticação vai em query string (`?token=`) em vez do pacote de auth do Socket.IO.
+- **Várias abas:** cada aba roda sua própria instância do mock. Para que todas se comportem como clientes de um único backend, o mock re-sincroniza o estado do `localStorage` antes de cada requisição e de cada liquidação de pedido, e repassa os eventos Socket.IO às outras abas via `BroadcastChannel`. Há um teste E2E com duas abas: login em uma não derruba a sessão da outra.
 - Versão: MSW 2.15 (o binding ainda não suporta MSW 3).
 
 ## Mock server

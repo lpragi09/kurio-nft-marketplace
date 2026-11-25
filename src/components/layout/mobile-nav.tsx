@@ -63,7 +63,7 @@ export function MobileTopBar({ title, action, back }: { title?: string; action?:
       >
         <ChevronLeft className="size-5" aria-hidden />
       </button>
-      {title && <h1 className="flex-1 text-center text-xl font-bold">{title}</h1>}
+      {title && <h1 className="flex-1 text-center text-[18px] font-bold leading-tight min-[400px]:text-xl">{title}</h1>}
       <div className="flex size-9 shrink-0 items-center justify-center">{action}</div>
     </div>
   )

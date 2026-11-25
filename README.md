@@ -99,7 +99,7 @@ Todas as ações passam pelo MSW: alteram o banco simulado, que responde via RES
 
 `tests/e2e/` cobre os 12 fluxos pedidos (busca/filtros/paginação/histórico, detalhe/404, cadastro/login/expiração/logout/troca de usuário, favoritos com rollback, carrinho/cupom/persistência/merge, compra completa, recusa/clique repetido/timeout idempotente, perfil/avatar/senha/carteiras, preço via Socket.IO no checkout, eventos duplicados/antigos e retomada de pedido pendente, teclado/foco/validação, skeletons/falha/nova tentativa), além da regressão visual de início, detalhe, carrinho e pagamento.
 
-- Última execução local: **69 aprovados, 0 falhas** (alguns testes rodam só no desktop por definição, como teclado, filtros laterais e larguras explícitas), em Chromium desktop (1440×900) e mobile (390×844). Também há verificação de overflow em 320, 390, 768 e 1440 px.
+- Última execução local: **71 aprovados, 0 falhas** (duas rodadas seguidas) (alguns testes rodam só no desktop por definição, como teclado, filtros laterais e larguras explícitas), em Chromium desktop (1440×900) e mobile (390×844). Também há verificação de overflow em 320, 390, 768 e 1440 px.
 - Cada teste roda num contexto novo (localStorage vazio → banco simulado re-semeado), o que garante isolamento.
 - Latência e falhas são controladas por cenário; eventos são disparados pelas rotas `/__mock/*`, passando pelo `socket.io-client` real. Os testes visuais fixam o relógio (`page.clock.setFixedTime`).
 - Baselines versionadas em `tests/e2e/__screenshots__/{desktop,mobile}/` (geradas no Windows; em outro SO, rode `npm run test:e2e:update` uma vez, porque a renderização de fonte varia).

@@ -141,9 +141,8 @@ function LineRow({ line }: { line: CartLine }) {
             <Link to="/nft/$nftId" params={{ nftId: line.nftId }} search={{ edicao: line.edition }} className="text-[16px] font-bold hover:text-primary">
               {line.nft.name}
             </Link>
-            <p className="text-[14px] text-kurio-sand">
-              ID do token: {line.nft.tokenId} · Ed. {line.edition}
-            </p>
+            <p className="text-[14px] text-kurio-sand">ID do token: {line.nft.tokenId}</p>
+            <p className="text-[12px] text-kurio-khaki">Edição {line.edition}</p>
             <AdjustedNote line={line} />
           </div>
         </div>

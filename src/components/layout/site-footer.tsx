@@ -23,13 +23,13 @@ export function SiteFooter() {
   return (
     <footer className="mt-24 pb-24 md:pb-4">
       <div className="mx-auto max-w-[1200px] bg-kurio-surface">
-        <div className="grid grid-cols-1 gap-8 px-6 py-8 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1.35fr] lg:gap-0 lg:px-12">
+        <div className="grid grid-cols-1 gap-8 px-6 py-8 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1.3fr] lg:gap-0 lg:px-8">
           {FEATURES.map((f) => (
             <div key={f.letter} className="lg:border-r lg:border-primary lg:pr-4 lg:[&:not(:first-child)]:pl-4">
               <span aria-hidden className="grid size-[74px] place-items-center rounded-full bg-primary text-2xl font-bold text-kurio-bg">
                 {f.letter}
               </span>
-              <h2 className="mt-5 text-lg font-bold">{f.title}</h2>
+              <h2 className="mt-5 text-lg font-bold lg:whitespace-nowrap">{f.title}</h2>
               <p className="mt-3 max-w-[230px] text-[15px] leading-[22px] text-kurio-khaki">{f.text}</p>
             </div>
           ))}
@@ -37,7 +37,7 @@ export function SiteFooter() {
         </div>
         <div className="grid grid-cols-1 gap-4 bg-kurio-band px-6 py-6 text-[15px] sm:grid-cols-2 lg:grid-cols-4 lg:items-center lg:px-8">
           <span className="font-bold tracking-[0.1em]">KURIO</span>
-          <span className="max-w-[230px]">Feito para colecionadores, criadores e cultura</span>
+          <span className="max-w-[240px]">Feito para colecionadores, criadores e cultura</span>
           <a href="mailto:contato@email.com" className="hover:text-primary">
             contato@email.com
           </a>

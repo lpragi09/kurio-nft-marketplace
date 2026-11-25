@@ -6,7 +6,7 @@ import { ComingSoon } from '@/components/kurio/coming-soon'
 import { MobileTopBar } from '@/components/layout/mobile-nav'
 import { logout } from '@/session/auth-actions'
 
-const item = 'relative flex items-center gap-3 px-4 py-3 text-[15px] text-primary hover:bg-kurio-surface-2'
+const item = 'relative flex items-center gap-3 whitespace-nowrap px-4 py-3 text-[15px] text-primary hover:bg-kurio-surface-2'
 const active = 'before:absolute before:inset-y-0 before:left-0 before:w-[5px] before:bg-primary bg-kurio-surface-2/40'
 
 export function ProfileLayout() {
@@ -16,7 +16,7 @@ export function ProfileLayout() {
     <>
       <MobileTopBar title="Meu perfil" />
       <div className="mx-auto grid max-w-[1200px] gap-7 px-6 md:mt-8 lg:grid-cols-[310px_1fr] xl:px-0">
-        <nav aria-label="Meu perfil" className="h-fit bg-kurio-surface pb-1 max-lg:overflow-x-auto">
+        <nav aria-label="Meu perfil" className="no-scrollbar h-fit bg-kurio-surface pb-1 max-lg:overflow-x-auto">
           <h2 className="px-3 pb-2 pt-4 text-lg font-bold max-lg:hidden">Meu perfil</h2>
           <ul className="flex lg:block">
             <li>
