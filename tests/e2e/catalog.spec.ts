@@ -113,6 +113,16 @@ test.describe('Catálogo', () => {
     await expect(grid(page)).toHaveCount(9)
   })
 
+  test('timeout de leitura: feedback e recuperação', async ({ page, isMobile }) => {
+    test.skip(isMobile)
+    test.setTimeout(60_000)
+    await page.goto('/?scenario=timeout-catalogo')
+    // 1st attempt + 1 automatic retry time out (10 s each) → error with retry action
+    await expect(page.getByRole('alert').filter({ hasText: 'O servidor demorou demais para responder.' })).toBeVisible({ timeout: 30_000 })
+    await page.getByRole('button', { name: 'Tentar novamente' }).click()
+    await expect(page.locator('#catalogo article')).toHaveCount(9)
+  })
+
   test('sem conexão mostra feedback de rede', async ({ page }) => {
     await page.goto('/?scenario=offline')
     await expect(page.getByRole('alert').filter({ hasText: 'Sem conexão' })).toBeVisible({ timeout: 15_000 })

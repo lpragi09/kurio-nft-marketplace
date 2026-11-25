@@ -70,7 +70,9 @@ export function useQuote(params: { network: Network; enabled?: boolean }) {
   const owner = useCartOwner()
   const coupon = useCoupon()
   const cart = useCart()
-  const cartVersion = cart.data?.version ?? 0
+  // the quote is keyed by the cart version AND the version of every NFT in it, so any
+  // price/stock change that reaches the cart (REST or Socket.IO) yields a fresh quote
+  const cartVersion = cart.data ? `${cart.data.version}:${cart.data.lines.map((l) => `${l.lineId}@${l.nft.version}`).join(',')}` : '0'
   const hasItems = (cart.data?.itemCount ?? 0) > 0
   return useQuery({
     queryKey: qk.quote(owner, { coupon, network: params.network, cartVersion }),

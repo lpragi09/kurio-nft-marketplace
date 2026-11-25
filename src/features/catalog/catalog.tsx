@@ -135,7 +135,7 @@ function Toolbar({ search, update, facets }: { search: CatalogSearch; update: Up
   const tab = search.aba ?? 'todos'
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
-      <div role="tablist" aria-label="Seções do catálogo" className="no-scrollbar -mx-1 flex gap-3 overflow-x-auto px-1 md:gap-5">
+      <div role="tablist" aria-label="Seções do catálogo" className="flex min-w-0 flex-wrap gap-x-3 gap-y-2 md:gap-x-5">
         {(Object.keys(TAB_LABELS) as CatalogTab[]).map((t) => (
           <button
             key={t}
@@ -152,17 +152,17 @@ function Toolbar({ search, update, facets }: { search: CatalogSearch; update: Up
           </button>
         ))}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
         <MobileFilters search={search} update={update} facets={facets} />
         <label htmlFor="ordem" className="text-[15px] max-sm:sr-only">
           Ordenar por:
         </label>
-        <div className="relative">
+        <div className="relative min-w-0 max-w-full">
           <select
             id="ordem"
             value={search.ordem ?? 'recentes'}
             onChange={(e) => update({ ordem: e.target.value === 'recentes' ? undefined : (e.target.value as CatalogSort) })}
-            className="h-8 w-[220px] cursor-pointer appearance-none rounded bg-transparent pl-1 pr-7 text-[15px] text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            className="h-8 w-[220px] max-w-full cursor-pointer appearance-none rounded bg-transparent pl-1 pr-7 text-[15px] text-foreground focus-visible:outline-2 focus-visible:outline-ring"
           >
             {(Object.keys(SORT_LABELS) as CatalogSort[]).map((s) => (
               <option key={s} value={s} className="bg-kurio-surface">

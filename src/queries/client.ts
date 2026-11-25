@@ -11,7 +11,7 @@ export const qk = {
   nftList: (params: NftListParams & { ids?: string[] }) => ['nfts', 'list', params] as const,
   nftDetail: (id: string) => ['nfts', 'detail', id] as const,
   cart: (owner: string) => ['cart', owner] as const,
-  quote: (owner: string, params: { coupon: string | null; network: string; cartVersion: number }) =>
+  quote: (owner: string, params: { coupon: string | null; network: string; cartVersion: string }) =>
     ['cart', owner, 'quote', params] as const,
   user: (uid: string) => ['user', uid] as const,
   favorites: (uid: string) => ['user', uid, 'favorites'] as const,

@@ -51,7 +51,8 @@ export function CheckoutPage() {
   if (cart.isPending || wallets.isPending) return <CheckoutSkeleton />
   if (cart.isError) return <Wrap><ErrorState error={cart.error} onRetry={() => cart.refetch()} /></Wrap>
   if (wallets.isError) return <Wrap><ErrorState error={wallets.error} onRetry={() => wallets.refetch()} /></Wrap>
-  return <Checkout userId={user.id} wallets={wallets.data} cartEmpty={cart.data.itemCount === 0} />
+    // sold-out lines keep the cart "non-empty": the user must see why the purchase was blocked
+  return <Checkout userId={user.id} wallets={wallets.data} cartEmpty={cart.data.lines.length === 0} />
 }
 
 function Wrap({ children }: { children: React.ReactNode }) {

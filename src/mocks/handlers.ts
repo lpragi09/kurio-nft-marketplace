@@ -97,6 +97,7 @@ function route<P extends PathParams, B extends DefaultBodyType>(
       if (rule) {
         const count = bumpFailureCounter(key)
         if (rule.times === undefined || count <= rule.times) {
+          if (rule.kind === 'timeout') await delay('infinite')
           return errorResponse(rule.status, rule.code, DEFAULT_MESSAGES[rule.status] ?? 'Falha simulada.')
         }
       }

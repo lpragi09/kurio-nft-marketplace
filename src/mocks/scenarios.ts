@@ -19,6 +19,8 @@ export type RouteKey =
   | 'wallets'
 
 export interface FailureRule {
+  /** 'timeout' = the request never gets an answer (the client gives up after its timeout) */
+  kind?: 'http' | 'timeout'
   status: number
   code: 'INTERNAL' | 'TRANSIENT' | 'FORBIDDEN' | 'UNAUTHENTICATED'
   /** fail only the first N matching requests, then succeed (omit = always) */
@@ -58,6 +60,7 @@ export type ScenarioName =
   | 'offline'
   | 'erro-servidor'
   | 'falha-transitoria'
+  | 'timeout-catalogo'
   | 'catalogo-vazio'
   | 'favoritos-falha'
   | 'sessao-curta'
@@ -116,6 +119,11 @@ export const SCENARIOS: Record<ScenarioName, { label: string; description: strin
     label: 'Falha transitória (503)',
     description: 'As 2 primeiras chamadas do catálogo respondem 503; a nova tentativa funciona.',
     patch: { failures: { 'nfts:list': { status: 503, code: 'TRANSIENT', times: 2 } } },
+  },
+  'timeout-catalogo': {
+    label: 'Timeout no catálogo',
+    description: 'As 2 primeiras listagens nunca respondem (timeout do cliente em 10 s); a nova tentativa funciona.',
+    patch: { failures: { 'nfts:list': { kind: 'timeout', status: 504, code: 'TRANSIENT', times: 2 } } },
   },
   'catalogo-vazio': { label: 'Catálogo vazio', description: 'A busca nunca encontra NFTs.', patch: { emptyCatalog: true } },
   'favoritos-falha': {

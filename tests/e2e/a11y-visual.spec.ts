@@ -42,11 +42,15 @@ test.describe('Acessibilidade', () => {
     await expect(page.locator(`#${describedBy}`)).toHaveText('E-mail é obrigatório.')
   })
 
-  test('sem overflow horizontal nas telas principais', async ({ page }) => {
-    for (const path of ['/', '/nft/emerald-ape-042', '/carrinho', '/entrar']) {
-      await open(page, path)
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
-      expect(overflow, path).toBeLessThanOrEqual(0)
+  test('sem overflow horizontal em 320, 390, 768 e 1440 px (320 px ≈ zoom de 400%)', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'as larguras são definidas explicitamente')
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 })
+      for (const path of ['/', '/nft/emerald-ape-042', '/carrinho', '/entrar', '/cadastro']) {
+        await open(page, path)
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
+        expect(overflow, `${path} @ ${width}px`).toBeLessThanOrEqual(0)
+      }
     }
   })
 })
@@ -54,9 +58,15 @@ test.describe('Acessibilidade', () => {
 test.describe('Regressão visual', () => {
   test.beforeEach(async ({ page }) => {
     await page.clock.setFixedTime(new Date('2026-11-24T12:00:00-03:00'))
+    // transient UI (toasts, dev panel) is not part of the visual contract
+    await page.addInitScript(() => {
+      const style = document.createElement('style')
+      style.textContent = '[data-sonner-toaster]{display:none!important}'
+      document.addEventListener('DOMContentLoaded', () => document.head.appendChild(style))
+    })
   })
 
-  const hideDynamic = (page: import('@playwright/test').Page) => [page.getByRole('button', { name: 'Cenários' }), page.locator('[data-sonner-toaster]')]
+  const hideDynamic = (page: import('@playwright/test').Page) => [page.getByRole('button', { name: 'Cenários' }), page.locator('[data-sonner-toast]')]
 
   test('início', async ({ page }) => {
     await open(page, '/')
@@ -84,6 +94,9 @@ test.describe('Regressão visual', () => {
     await addToCart(page, 'emerald-ape-042')
     await login(page, USERS.ana)
     await goToCheckoutAndConnect(page)
+    // stable state: quote settled, no pending refetch
+    await expect(page.locator('[aria-busy="true"]')).toHaveCount(0)
+    await page.evaluate(() => window.scrollTo(0, 0))
     await page.evaluate(() => document.fonts.ready)
     await expect(page).toHaveScreenshot('pagamento.png', { mask: hideDynamic(page) })
   })

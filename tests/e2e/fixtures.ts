@@ -69,7 +69,11 @@ export async function login(page: Page, user: (typeof USERS)[keyof typeof USERS]
   await page.getByRole('textbox', { name: 'E-mail', exact: true }).fill(user.email)
   await page.getByLabel('Senha', { exact: true }).fill(user.password)
   await page.getByRole('button', { name: 'Entrar', exact: true }).click()
-  await expect(page.getByText(`Bem-vindo de volta, ${user.name}!`)).toBeVisible()
+  // session persisted for the expected user (independent of the toast)
+  await expect
+    .poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('kurio.session.v1') ?? 'null')?.user?.email ?? null))
+    .toBe(user.email)
+  await expect(page).not.toHaveURL(/\/entrar/)
   await waitForRealtime(page)
 }
 
