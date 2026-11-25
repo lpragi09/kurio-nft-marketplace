@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { AuthScreen, safeRedirect } from '@/features/auth/auth-screen'
-import { validateAuthSearch } from '@/features/auth/auth-search'
+import { AuthScreen } from '@/features/auth/auth-screen'
+import { safeRedirect, validateAuthSearch } from '@/features/auth/auth-search'
 import { isAuthenticated } from '@/session/session-store'
 
 export const Route = createFileRoute('/entrar')({

@@ -2,7 +2,6 @@ import type { QueryClient } from '@tanstack/react-query'
 import { createRootRouteWithContext, Link, Outlet, useRouterState } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 import { Toaster } from '@/components/ui/sonner'
-import { TooltipProvider } from '@/components/ui/tooltip'
 import { MobileTabBar } from '@/components/layout/mobile-nav'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
@@ -23,7 +22,7 @@ const MOCKS_ENABLED = import.meta.env.VITE_ENABLE_MOCKS !== 'false'
 
 function RootLayout() {
   return (
-    <TooltipProvider delayDuration={300}>
+    <>
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded focus:bg-primary focus:px-3 focus:py-2 focus:text-kurio-bg">
         Pular para o conteúdo
       </a>
@@ -38,7 +37,7 @@ function RootLayout() {
       <RealtimeBridge />
       {MOCKS_ENABLED && <ScenarioPanel />}
       <Toaster position="bottom-right" richColors closeButton />
-    </TooltipProvider>
+    </>
   )
 }
 

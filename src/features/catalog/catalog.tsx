@@ -3,6 +3,7 @@ import { SlidersHorizontal, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { CatalogSort, CatalogTab, CollectionCategory, Network, NftListResponse } from '@/contracts/api'
 import { NETWORKS } from '@/contracts/api'
+import { useMediaQuery } from '@/lib/use-media-query'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -33,6 +34,8 @@ export function Catalog() {
   const params = toListParams(search)
   const list = useNftList(params)
   const { isFavorite, toggle } = useFavoriteToggle()
+  // the sidebar (and its featured-NFT request) only exists on large screens
+  const wide = useMediaQuery('(min-width: 1024px)')
 
   /** every filter change resets pagination; `replace` avoids flooding history while typing */
   const update = (patch: Partial<CatalogSearch>, opts: { keepPage?: boolean; replace?: boolean } = {}) =>
@@ -53,10 +56,12 @@ export function Catalog() {
         Catálogo de NFTs
       </h2>
       <div className="grid gap-12 lg:grid-cols-[310px_1fr]">
-        <aside className="hidden lg:block" aria-label="Filtros">
-          <Filters search={search} facets={facets} update={update} />
-          <FeaturedNft />
-        </aside>
+        {wide && (
+          <aside aria-label="Filtros">
+            <Filters search={search} facets={facets} update={update} />
+            <FeaturedNft />
+          </aside>
+        )}
 
         <div className="min-w-0">
           <Toolbar search={search} update={update} facets={facets} />

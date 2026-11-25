@@ -1,22 +1,13 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
-import { useQueryClient } from '@tanstack/react-query'
-import { LogIn, LogOut, Search, ShoppingCart, User as UserIcon, Wallet, X } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import { toast } from 'sonner'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { LogIn, Search, ShoppingCart, X } from 'lucide-react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useCart } from '@/queries/cart'
-import { logout } from '@/session/auth-actions'
 import { useSession } from '@/session/session-store'
 import { cn } from '@/lib/utils'
 import { Avatar } from '@/components/kurio/avatar'
 import { ComingSoon } from '@/components/kurio/coming-soon'
+
+const AccountMenu = lazy(() => import('./account-menu'))
 
 const navLink = 'relative inline-flex h-[45px] items-start pt-1 text-[15px] text-foreground transition-colors hover:text-primary'
 const activeNav = 'text-primary font-bold after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:rounded-full after:bg-primary'
@@ -111,8 +102,6 @@ export function CartButton({ className }: { className?: string }) {
 
 function AccountButton() {
   const { user } = useSession()
-  const qc = useQueryClient()
-  const navigate = useNavigate()
   const href = useRouterState({ select: (s) => s.location.href })
   if (!user) {
     return (
@@ -125,35 +114,10 @@ function AccountButton() {
       </Link>
     )
   }
+  // the dropdown (Radix menu + floating-ui) only loads for signed-in users
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full" aria-label={`Conta de ${user.displayName}`}>
-        <Avatar user={user} size={36} />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56 border-kurio-line bg-kurio-surface">
-        <DropdownMenuLabel className="truncate">{user.displayName}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/perfil">
-            <UserIcon aria-hidden /> Meu perfil
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/perfil/carteiras">
-            <Wallet aria-hidden /> Carteiras
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onSelect={async () => {
-            await logout(qc)
-            toast.success('Você saiu da sua conta.')
-            void navigate({ to: '/' })
-          }}
-        >
-          <LogOut aria-hidden /> Sair
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Suspense fallback={<Avatar user={user} size={36} />}>
+      <AccountMenu user={user} />
+    </Suspense>
   )
 }

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { ArrowRight, Search } from 'lucide-react'
 import { useState } from 'react'
+import { useMediaQuery } from '@/lib/use-media-query'
 import { cn } from '@/lib/utils'
 import { NftImage } from '@/components/kurio/nft-image'
 import { ComingSoon } from '@/components/kurio/coming-soon'
@@ -13,10 +14,11 @@ const SLIDES = [
 ]
 
 export function HomePage() {
+  // render (not just hide) each hero per breakpoint so mobile never downloads the desktop art
+  const desktop = useMediaQuery('(min-width: 768px)')
   return (
     <>
-      <MobileHomeTop />
-      <Hero />
+      {desktop ? <Hero /> : <MobileHomeTop />}
       <Catalog />
       <Promos />
       <Journal />

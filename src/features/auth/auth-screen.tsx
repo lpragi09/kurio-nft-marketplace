@@ -15,13 +15,11 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { ComingSoon } from '@/components/kurio/coming-soon'
 import { TextField } from '@/components/kurio/form-field'
 import { completeLogin } from '@/session/auth-actions'
+import { safeRedirect } from './auth-search'
 import { HeroBackdrop } from './hero-backdrop'
 
 type Mode = 'login' | 'register'
 
-export function safeRedirect(redirect?: string) {
-  return redirect && redirect.startsWith('/') && !redirect.startsWith('//') && !/^\/(entrar|cadastro)/.test(redirect) ? redirect : '/'
-}
 
 export function AuthScreen({ mode, redirect, reason }: { mode: Mode; redirect?: string; reason?: string }) {
   const desktop = useMediaQuery('(min-width: 768px)')
