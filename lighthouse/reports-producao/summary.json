@@ -1,6 +1,6 @@
 {
   "env": {
-    "date": "2026-11-25T02:20:40.322Z",
+    "date": "2026-11-25T02:27:54.875Z",
     "lighthouse": "13.6.0",
     "chrome": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36",
     "node": "v24.14.0",
@@ -16,51 +16,51 @@
       "page": "inicio",
       "profile": "mobile",
       "median": {
-        "performance": 83,
+        "performance": 89,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcpMs": 3043,
+        "lcpMs": 2787,
         "cls": 0.001,
-        "tbtMs": 376,
-        "fcpMs": 2132
+        "tbtMs": 318,
+        "fcpMs": 920
       },
       "runs": [
         {
           "scores": {
-            "performance": 67,
+            "performance": 70,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 3087.3914999999997,
-          "cls": 0.001156380485590839,
-          "tbt": 1167.5,
-          "fcp": 2132.3914999999997
+          "lcp": 2866.8185,
+          "cls": 0.001020220030690367,
+          "tbt": 1405,
+          "fcp": 1069.8184999999999
         },
         {
           "scores": {
-            "performance": 83,
+            "performance": 89,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 3043.0638,
-          "cls": 0.001172644095481728,
-          "tbt": 375.5,
-          "fcp": 2091.0638
+          "lcp": 2787.3229,
+          "cls": 0.001020220030690367,
+          "tbt": 318.0000000000001,
+          "fcp": 920.3229
         },
         {
           "scores": {
-            "performance": 85,
+            "performance": 95,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 3023.5829,
-          "cls": 0,
-          "tbt": 316,
-          "fcp": 2149.5829
+          "lcp": 2716.2641,
+          "cls": 0.001020220030690367,
+          "tbt": 144,
+          "fcp": 920.2641
         }
       ]
     },
@@ -72,10 +72,10 @@
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcpMs": 653,
+        "lcpMs": 617,
         "cls": 0.002,
-        "tbtMs": 23,
-        "fcpMs": 526
+        "tbtMs": 18,
+        "fcpMs": 265
       },
       "runs": [
         {
@@ -85,10 +85,10 @@
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 653.2045,
-          "cls": 0.001676614832776863,
-          "tbt": 23,
-          "fcp": 513.2045
+          "lcp": 605.9965,
+          "cls": 0.00164017990488521,
+          "tbt": 13,
+          "fcp": 262.99649999999997
         },
         {
           "scores": {
@@ -97,10 +97,10 @@
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 674.2323,
-          "cls": 0.001676614832776863,
-          "tbt": 43,
-          "fcp": 538.2323
+          "lcp": 618.5110999999999,
+          "cls": 0.00164017990488521,
+          "tbt": 17.5,
+          "fcp": 266.0111
         },
         {
           "scores": {
@@ -109,10 +109,10 @@
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 626.2868,
-          "cls": 0.001676614832776863,
-          "tbt": 15.5,
-          "fcp": 526.2868
+          "lcp": 616.9201,
+          "cls": 0.00164017990488521,
+          "tbt": 22,
+          "fcp": 264.9201
         }
       ]
     },
@@ -120,51 +120,51 @@
       "page": "detalhe",
       "profile": "mobile",
       "median": {
-        "performance": 92,
+        "performance": 96,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcpMs": 2565,
-        "cls": 0.015,
-        "tbtMs": 259,
-        "fcpMs": 927
+        "lcpMs": 2530,
+        "cls": 0.029,
+        "tbtMs": 149,
+        "fcpMs": 920
       },
       "runs": [
         {
           "scores": {
-            "performance": 93,
+            "performance": 96,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 2433.4309000000003,
+          "lcp": 2432.2528,
           "cls": 0,
-          "tbt": 241.5,
-          "fcp": 933.4309000000001
+          "tbt": 158.5,
+          "fcp": 932.2528
         },
         {
           "scores": {
-            "performance": 92,
+            "performance": 96,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 2564.6816,
-          "cls": 0.01458080194410693,
-          "tbt": 258.5,
-          "fcp": 921.6816
+          "lcp": 2541.3255,
+          "cls": 0.02916160388821386,
+          "tbt": 141.5,
+          "fcp": 918.3255
         },
         {
           "scores": {
-            "performance": 88,
+            "performance": 96,
             "accessibility": 100,
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 2609.1669,
-          "cls": 0.01458080194410693,
-          "tbt": 373.5000000000002,
-          "fcp": 927.1668999999999
+          "lcp": 2530.2245000000003,
+          "cls": 0.02916160388821386,
+          "tbt": 149,
+          "fcp": 920.2245
         }
       ]
     },
@@ -176,10 +176,10 @@
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100,
-        "lcpMs": 563,
+        "lcpMs": 557,
         "cls": 0.006,
         "tbtMs": 0,
-        "fcpMs": 263
+        "fcpMs": 262
       },
       "runs": [
         {
@@ -189,10 +189,10 @@
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 580.3533,
+          "lcp": 554.731,
           "cls": 0.005623677692807491,
           "tbt": 0,
-          "fcp": 262.8533
+          "fcp": 261.231
         },
         {
           "scores": {
@@ -201,10 +201,10 @@
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 562.9575,
+          "lcp": 556.8813,
           "cls": 0.005623677692807491,
           "tbt": 0,
-          "fcp": 262.9575
+          "fcp": 262.3813
         },
         {
           "scores": {
@@ -213,10 +213,10 @@
             "best-practices": 100,
             "seo": 100
           },
-          "lcp": 543.9087999999999,
+          "lcp": 562.1073,
           "cls": 0.005623677692807491,
           "tbt": 0,
-          "fcp": 260.4088
+          "fcp": 265.1073
         }
       ]
     }

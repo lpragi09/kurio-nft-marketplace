@@ -5,6 +5,7 @@ import { useMediaQuery } from '@/lib/use-media-query'
 import { cn } from '@/lib/utils'
 import { NftImage } from '@/components/kurio/nft-image'
 import { ComingSoon } from '@/components/kurio/coming-soon'
+import { LazySection } from '@/components/kurio/lazy-section'
 import { Catalog } from '@/features/catalog/catalog'
 
 const SLIDES = [
@@ -20,8 +21,12 @@ export function HomePage() {
     <>
       {desktop ? <Hero /> : <MobileHomeTop />}
       <Catalog />
-      <Promos />
-      <Journal />
+      <LazySection minHeight={desktop ? 346 : 900}>
+        <Promos />
+      </LazySection>
+      <LazySection minHeight={desktop ? 760 : 2200}>
+        <Journal />
+      </LazySection>
     </>
   )
 }
