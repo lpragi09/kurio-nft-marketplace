@@ -34,7 +34,6 @@ playwright-report/
 blob-report/
 lighthouse/.tmp/
 
-.claude/
 
 .vercel
 .env*
